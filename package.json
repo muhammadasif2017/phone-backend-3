@@ -2,10 +2,12 @@
   "name": "phone-backend-3",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "build:ui": "rm -rf build && cd ../part2/phonebook/ && npm run build && cp -r build ../phonebook-backend-3",
-    "deploy": "git push heroku main",   
-    "logs:prod": "heroku logs --tail",
+    "scripts": {
+    "create-dist": "bash -c 'if [ ! -d './dist' ]; then mkdir ./dist; fi && echo 'Folder created or already exists''",
+    "build:ui": "rm -rf dist && npm run create-dist && cd ../part2/phonebook && npm run build && cp -r ./build/* ../../phone-backend-3/dist/",
+    "deploy": "flyctl deploy",   
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "flyctl logs",
     "start": "node index.js",
     "dev": "nodemon node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
