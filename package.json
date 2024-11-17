@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf build && cd ../part2/phonebook/ && npm run build && cp -r build ../phonebook-backend-3",
+    "deploy": "git push heroku main",   
+    "logs:prod": "heroku logs --tail",
     "start": "node index.js",
     "dev": "nodemon node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

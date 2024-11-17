@@ -7,6 +7,8 @@ const cors = require("cors");
 
 app.use(cors());
 
+app.use(express.static('build'));
+
 morgan.token("req-body", (req) => {
   return req.body && Object.keys(req.body).length
     ? JSON.stringify(req.body)
@@ -114,6 +116,28 @@ app.post("/api/persons", (request, response) => {
   persons = persons.concat(person);
   response.json(persons);
 });
+
+let notes = [
+  {
+    id: "1",
+    content: "HTML is easy",
+    important: true
+  },
+  {
+    id: "2",
+    content: "Browser can execute only JavaScript",
+    important: false
+  },
+  {
+    id: "3",
+    content: "GET and POST are the most important methods of HTTP protocol",
+    important: true
+  }
+]
+
+app.get('/api/notes', (request, response) => {
+  response.json(notes)
+})
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
