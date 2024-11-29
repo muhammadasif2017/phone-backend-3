@@ -1,9 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
 app.use(express.json());
 
+const PhoneBook = require('./models/phone-book')
+
 const cors = require("cors");
+const phoneBook = require("./models/phone-book");
 
 app.use(cors());
 
@@ -53,25 +57,29 @@ let persons = [
 ];
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  PhoneBook.find({}).then((persons) => {
+    console.log("persons:", persons);
+    response.json(persons);
+  });
 });
 
 app.get("/info", (request, response) => {
-  const responseStr = `<div>
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date()}</p>
-  </div>`;
-  response.send(responseStr);
+  PhoneBook.find({}).then((persons) => {
+    const responseStr = `<div>
+      <p>Phonebook has info for ${persons.length} people</p>
+      <p>${new Date()}</p>
+    </div>`;
+    response.send(responseStr);
+  })
 });
 
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  const person = persons.find((person) => person.id === id);
-  if (person) {
+  PhoneBook.findById(id).then((person) => {
     response.json(person);
-  } else {
+  }).catch(() => {
     response.status(404).end();
-  }
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -80,13 +88,11 @@ app.delete("/api/persons/:id", (request, response) => {
 
   console.log(person);
 
-  if (!person) {
+  PhoneBook.findByIdAndDelete(id).then((person) => {
+    response.status(204).end();
+  }).catch(() => {
     return response.status(404).send("Person not found");
-  }
-
-  persons = persons.filter((p) => p.id !== id);
-  console.log(persons);
-  response.status(204).end();
+  })
 });
 
 const generateId = () => {
@@ -97,47 +103,29 @@ const generateId = () => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
   console.log(body);
-  const id = Math.random(0, 1010100101);
+  // const id = Math.random(0, 1010100101);
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: "name or number is missing",
     });
   }
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
   const person = {
     name: body.name,
     number: body.number,
-    id: generateId(),
+    // id: generateId(),
   };
-  persons = persons.concat(person);
-  response.json(persons);
+  // persons = persons.concat(person);
+  const phonebook = new PhoneBook(person);
+  phonebook.save().then((persons) => {
+    console.log(`added ${person.name} number ${person.number} to phonebook`);
+    response.json(persons);
+  })
 });
-
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  }
-]
-
-app.get('/api/notes', (request, response) => {
-  response.json(notes)
-})
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
