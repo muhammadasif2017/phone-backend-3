@@ -2,10 +2,10 @@
   "name": "phone-backend-3",
   "version": "1.0.0",
   "main": "index.js",
-    "scripts": {
+  "scripts": {
     "create-dist": "bash -c 'if [ ! -d './dist' ]; then mkdir ./dist; fi && echo 'Folder created or already exists''",
     "build:ui": "rm -rf dist && npm run create-dist && cd ../part2/phonebook && npm run build && cp -r ./build/* ../../phone-backend-3/dist/",
-    "deploy": "flyctl deploy",   
+    "deploy": "flyctl deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "flyctl logs",
     "start": "node index.js",
@@ -17,7 +17,9 @@
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "mongoose": "^8.8.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
