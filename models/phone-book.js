@@ -1,12 +1,4 @@
 const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-
-const url = process.env.MONGODB_URI;
-
-mongoose
-  .connect(url)
-  .then(() => console.log('connected to mongodb'))
-  .catch((error) => console.log('error connecting database', error));
 
 const phoneBookSchema = new mongoose.Schema({
   name: {
