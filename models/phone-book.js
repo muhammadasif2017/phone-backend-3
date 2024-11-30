@@ -6,11 +6,25 @@ const url = process.env.MONGODB_URI;
 mongoose.connect(url).then(() => console.log('connected to mongodb')).catch((error) => console.log(`error connecting database`, error));
 
 const phoneBookSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d{5,}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+    required: [true, 'User phone number required']
+  }
 });
 
-const PhoneBook = mongoose.model("Phonebook", phoneBookSchema);
+// const PhoneBook = mongoose.model("Phonebook", phoneBookSchema);
 // if (name && number) {
 //   const phoneBook = new PhoneBook({
 //     name,
