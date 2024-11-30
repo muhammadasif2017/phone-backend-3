@@ -30,11 +30,11 @@ const PhoneBook = mongoose.model("Phonebook", phoneBookSchema);
 //   });
 // }
 
-phoneSchema.set('toJSON', {
+phoneBookSchema.set('toJSON', {
   transform: (document, returedObject) => {
     returedObject.id = returedObject._id.toString();
     delete returedObject._id;
-    delete returedObject._v;
+    delete returedObject.__v;
   }
 })
 
