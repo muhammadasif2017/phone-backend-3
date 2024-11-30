@@ -14,7 +14,7 @@ logger.info(`connecting to ${config.MONGODB_URI}`);
 moongoose.connect(config.MONGODB_URI).then(() => {
   logger.info('connected to MongoDB');
 }).catch((error) => {
-  console.log('error connecting to MongoDB: ', error.message);
+  logger.error('error connecting to MongoDB: ', error.message);
 })
 
 app.use(cors());
