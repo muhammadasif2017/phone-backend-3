@@ -71,7 +71,7 @@ app.get("/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  PhoneBook.findById(id, { runValidators: true, context: "query" })
+  PhoneBook.findById(id)
     .then((person) => {
       if (person) {
         response.json(person);
